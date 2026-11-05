@@ -40,6 +40,28 @@ passes, and report any step that fails or gets skipped.
 5. **Report.** Tell the user the commit, test results, migrations applied,
    advisor findings, and the Vercel deployment URL and status.
 
+## How this environment is wired
+
+- **Cloud sandbox network:** can reach `plojuxwrndvtexplnohu.supabase.co` and
+  `api.stripe.com`, plus package registries. A Stripe **test-mode** secret key
+  is injected by the network proxy for `api.stripe.com`. Code that reads
+  `STRIPE_SECRET_KEY` should get the placeholder `proxy-injected` when it runs
+  in the sandbox. Never put a real key in code or `.env`.
+- **Supabase admin work** (migrations, SQL, advisors, types, edge functions,
+  logs) goes through the Supabase MCP tools, not the Supabase CLI. Direct
+  Postgres connections (port 5432) aren't available from the sandbox.
+- **Vercel** is linked to the GitHub repo. Every push to any branch deploys
+  automatically. Deployments are behind Vercel Authentication, so fetch them
+  with the `web_fetch_vercel_url` MCP tool, not curl.
+- **Vercel env vars already set** (all environments):
+  `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Secrets
+  still to add in the Vercel dashboard are listed in `.env.example`.
+- **Supabase:** free plan, so no database branching. The `ensure_rls` event
+  trigger turns on RLS automatically for every new table in `public`. Every
+  table still needs explicit policies.
+- **Branches:** develop on feature branches (preview deploys). `main` becomes
+  production when the user says the dev run is done.
+
 ## Stripe safety
 
 The connected Stripe account is in live mode. Use test-mode keys for
