@@ -37,7 +37,10 @@ passes, and report any step that fails or gets skipped.
    by the pushed commit SHA. Wait for it to reach `READY`. If it hits `ERROR`,
    read the build logs, fix the problem, and push again. If no deployment
    appears, check that the Vercel project is still linked to the GitHub repo.
-5. **Report.** Tell the user the commit, test results, migrations applied,
+5. **Release notes.** Before committing, add or update the entry in
+   `src/lib/changelog.ts` (shown on the "What's new" page) for anything users
+   will notice, and bump `version` in `package.json` to match.
+6. **Report.** Tell the user the commit, test results, migrations applied,
    advisor findings, and the Vercel deployment URL and status.
 
 ## How this environment is wired

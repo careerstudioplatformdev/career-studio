@@ -19,12 +19,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <header className="border-b border-line bg-white">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-ink">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 sm:h-14 sm:flex-nowrap sm:py-0">
+            <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-semibold text-ink">
               <span className="grid h-7 w-7 place-items-center rounded-md bg-brand text-sm font-bold text-white">CS</span>
               Career Studio
             </Link>
-            <SiteNav />
+            <div className="-mx-2 w-full sm:mx-0 sm:w-auto">
+              <SiteNav />
+            </div>
           </div>
         </header>
         <main id="main">{children}</main>
