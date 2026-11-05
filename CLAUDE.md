@@ -47,6 +47,11 @@ passes, and report any step that fails or gets skipped.
   is injected by the network proxy for `api.stripe.com`. Code that reads
   `STRIPE_SECRET_KEY` should get the placeholder `proxy-injected` when it runs
   in the sandbox. Never put a real key in code or `.env`.
+- **Running the app in the sandbox:** Node's built-in `fetch` ignores the proxy, so
+  start the server with `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt npm start`.
+  Launch Playwright's Chromium with `proxy: { server: process.env.HTTPS_PROXY, bypass: "localhost,127.0.0.1" }`.
+  A pre-confirmed test login exists for previews: `preview-tester@careerstudio-preview.dev`
+  (ask the user for the password; delete the account before real launch).
 - **Supabase admin work** (migrations, SQL, advisors, types, edge functions,
   logs) goes through the Supabase MCP tools, not the Supabase CLI. Direct
   Postgres connections (port 5432) aren't available from the sandbox.
@@ -61,6 +66,16 @@ passes, and report any step that fails or gets skipped.
   table still needs explicit policies.
 - **Branches:** develop on feature branches (preview deploys). `main` becomes
   production when the user says the dev run is done.
+
+## App structure
+
+- Next.js 16 (App Router, TypeScript, Tailwind) on Vercel; Supabase for auth and Postgres (RLS on every table).
+  This replaces the Django/DigitalOcean stack in the original blueprint.
+- `src/lib/resume/`: pure, unit-tested logic (types, scoring, red flags, JD match, parser, DOCX/PDF export).
+- `src/components/resume/`: builder (guided Q&A), studio (edit/check/match/download), editors, panels.
+- Scripts: `npm test` (vitest), `npm run lint`, `npx tsc --noEmit`, `npm run build`.
+- Product rule: never invent facts. Unknown stays empty, every entry has a source and a confirmed flag,
+  and export requires every fact confirmed plus a final attestation.
 
 ## Stripe safety
 
