@@ -1,7 +1,11 @@
 // Structured resume document. Every entry records where it came from and whether
 // the user has confirmed it. Unknown details stay empty; we never fill them in.
 
-export type FactSource = "typed" | "uploaded" | "edited";
+/**
+ * typed: the user wrote it. uploaded: pulled from their file. edited: uploaded, then changed.
+ * ai: drafted by the AI from the user's own words (story or answers). Always unconfirmed at first.
+ */
+export type FactSource = "typed" | "uploaded" | "edited" | "ai";
 
 export type Confirmable = {
   id: string;
@@ -72,9 +76,22 @@ export type ResumeContent = {
   certifications: Certification[];
   skills: string[];
   skillsConfirmed: boolean;
+  /** Desired length in pages, 1–5. Content is never padded; only trimmed to fit. */
+  pageTarget: PageTarget;
 };
 
+export type PageTarget = 1 | 2 | 3 | 4 | 5;
+
+export type ChatTurn = { role: "coach" | "user"; text: string; why?: string };
+
 export type QaState = {
+  /** "story": AI-assisted, starts from the user's personal story. "guided": step-by-step forms. */
+  mode?: "story" | "guided";
+  /** The user's own words. The AI may only draw facts from this and their answers. */
+  story?: string;
+  chat?: ChatTurn[];
+  /** The job description the user is currently fitting this resume to. */
+  jobDescription?: string;
   step?: string;
   experienceLevel?: ExperienceLevel;
   completed?: boolean;
@@ -87,7 +104,8 @@ export type ResumeRow = {
   id: string;
   user_id: string;
   title: string;
-  origin: "qa" | "upload";
+  origin: "qa" | "upload" | "tailored";
+  parent_id: string | null;
   content: ResumeContent;
   qa_state: QaState;
   status: "draft" | "approved";

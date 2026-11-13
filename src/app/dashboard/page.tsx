@@ -12,7 +12,10 @@ export default async function Dashboard() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-ink">My resumes</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-ink">My resumes</h1>
+        <Link href="/applications" className="text-sm font-medium text-brand underline">Track job applications →</Link>
+      </div>
 
       {resumes && resumes.length > 0 ? (
         <ul className="mt-6 divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">
@@ -27,7 +30,7 @@ export default async function Dashboard() {
                   <div>
                     <div className="font-medium text-ink">{r.title}</div>
                     <div className="text-sm text-muted">
-                      {r.origin === "qa" ? "Built from questions" : "Uploaded"} · Updated{" "}
+                      {r.origin === "qa" ? "Built with your coach" : r.origin === "tailored" ? "Tailored for a job" : "Uploaded"} · Updated{" "}
                       {new Date(r.updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </div>
                   </div>

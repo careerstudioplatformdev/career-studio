@@ -14,7 +14,7 @@ export async function createQaResume() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("resumes")
-    .insert({ origin: "qa", title: "My first resume", content: emptyResume(), qa_state: { step: "level" } })
+    .insert({ origin: "qa", title: "My first resume", content: emptyResume(), qa_state: { mode: "story" } })
     .select("id")
     .single();
   if (error || !data) throw new Error(error?.message ?? "Could not create resume");

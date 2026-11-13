@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/dashboard", "/resumes", "/account"];
+const PROTECTED = ["/dashboard", "/resumes", "/account", "/applications"];
 
 // Refreshes the Supabase session cookie on every request and sends signed-out
 // visitors away from private pages.

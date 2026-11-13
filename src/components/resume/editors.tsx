@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge, Button, Field, TextArea } from "@/components/ui";
 import { isYearOnly } from "@/lib/resume/dates";
 import { newCertification, newEducation, newExperience, newProject } from "@/lib/resume/factory";
+import { composeContribution, hasMetric, quantifyPrompts, type Contribution } from "@/lib/resume/impact";
 import type {
   Certification,
   Confirmable,
@@ -32,6 +33,7 @@ export function SourceBadges({ item }: { item: { source: Confirmable["source"]; 
     <span className="flex flex-wrap items-center gap-1">
       {item.source === "uploaded" && <Badge tone="brand">From your upload</Badge>}
       {item.source === "edited" && <Badge tone="brand">Edited by you</Badge>}
+      {item.source === "ai" && <Badge tone="brand">AI-drafted from your words</Badge>}
       {item.source !== "typed" && item.confidence === "low" && <Badge tone="warn">Low confidence: please check</Badge>}
       {item.confirmed ? <Badge tone="ok">Confirmed</Badge> : <Badge tone="warn">Needs your confirmation</Badge>}
     </span>
@@ -238,6 +240,8 @@ export function ExperienceEditor({
             value={e.bullets}
             onChange={(bullets) => update(e.id, { bullets })}
           />
+          <QuantifyHints bullets={e.bullets} />
+          <ContributionBuilder onAdd={(b) => update(e.id, { bullets: [...e.bullets.filter((x) => x.trim()), b] })} />
         </EntryShell>
       ))}
       <Button variant="secondary" onClick={() => onChange({ ...resume, experience: [...resume.experience, newExperience("typed", kinds[0])] })}>
@@ -309,6 +313,7 @@ export function ProjectsEditor({ resume, onChange }: EditorProps) {
             value={p.bullets}
             onChange={(bullets) => update(p.id, { bullets })}
           />
+          <ContributionBuilder onAdd={(b) => update(p.id, { bullets: [...p.bullets.filter((x) => x.trim()), b] })} />
         </EntryShell>
       ))}
       <Button variant="secondary" onClick={() => onChange({ ...resume, projects: [...resume.projects, newProject()] })}>
@@ -423,5 +428,70 @@ export function SummaryEditor({ resume, onChange }: EditorProps) {
         <ConfirmBox checked={resume.summaryConfirmed} onChange={(v) => onChange({ ...resume, summaryConfirmed: v })} />
       )}
     </div>
+  );
+}
+
+// ---------- Measurable contributions ----------
+
+const EMPTY_CONTRIBUTION: Contribution = { action: "", scope: "", how: "", result: "", metric: "" };
+
+/** Guided XYZ bullet builder: what you did, for whom, how, and the measurable result. */
+export function ContributionBuilder({ onAdd }: { onAdd: (bullet: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [c, setC] = useState<Contribution>(EMPTY_CONTRIBUTION);
+  const preview = composeContribution(c);
+  const set = (patch: Partial<Contribution>) => setC({ ...c, ...patch });
+  if (!open) {
+    return (
+      <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
+        + Add a measurable contribution
+      </Button>
+    );
+  }
+  return (
+    <div className="rounded-lg border border-brand/30 bg-brand-soft/30 p-3">
+      <p className="text-sm font-medium text-ink">Build an achievement bullet</p>
+      <p className="mb-3 text-xs text-muted">Recruiters look for: what you did, for whom, how, and the result. Use only numbers you can explain.</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="What you did (start with a verb)" placeholder="Automated the weekly sales report" value={c.action} onChange={(e) => set({ action: e.target.value })} />
+        <Field label="For whom / scope (optional)" placeholder="for a 12-person sales team" value={c.scope} onChange={(e) => set({ scope: e.target.value })} />
+        <Field label="How / with what (optional)" placeholder="using Excel Power Query" value={c.how} onChange={(e) => set({ how: e.target.value })} />
+        <Field label="Result (optional)" placeholder="cutting prep time" value={c.result} onChange={(e) => set({ result: e.target.value })} />
+        <Field label="The number, if you know it (optional)" placeholder="3 hours a week, 40%, $12,000" value={c.metric} onChange={(e) => set({ metric: e.target.value })} />
+      </div>
+      {preview && <p className="mt-3 rounded bg-white p-2 text-sm text-ink">{preview}</p>}
+      <div className="mt-3 flex gap-2">
+        <Button
+          size="sm"
+          disabled={!preview}
+          onClick={() => {
+            onAdd(preview);
+            setC(EMPTY_CONTRIBUTION);
+            setOpen(false);
+          }}
+        >
+          Add bullet
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+      </div>
+    </div>
+  );
+}
+
+/** Nudges for bullets with no measurable result. */
+export function QuantifyHints({ bullets }: { bullets: string[] }) {
+  const first = bullets.map((b) => b.trim()).find((b) => b && !hasMetric(b));
+  if (!first) return null;
+  const count = bullets.filter((b) => b.trim() && !hasMetric(b)).length;
+  return (
+    <details className="rounded-lg bg-canvas px-3 py-2 text-sm">
+      <summary className="cursor-pointer text-muted">
+        {count} bullet{count > 1 ? "s have" : " has"} no measurable result. Questions to help you add one
+      </summary>
+      <p className="mt-1 text-xs text-muted">For &quot;{first.slice(0, 60)}{first.length > 60 ? "…" : ""}&quot;:</p>
+      <ul className="mt-1 list-disc pl-5 text-ink">
+        {quantifyPrompts(first).map((q) => <li key={q}>{q}</li>)}
+      </ul>
+    </details>
   );
 }

@@ -65,3 +65,16 @@ export function parseLooseDate(text: string): { value: string; precise: boolean 
   if (m) return { value: m[1], precise: false };
   return { value: "", precise: false };
 }
+
+/** Total months covered by the given ranges, counting overlapping months once. */
+export function monthsCovered(ranges: { start: string; end: string; current: boolean }[], now: Date = new Date()): number {
+  const nowIdx = toMonthIndex(currentMonth(now))!;
+  const covered = new Set<number>();
+  for (const r of ranges) {
+    const s = toMonthIndex(r.start);
+    const e = r.current ? nowIdx : toMonthIndex(r.end, true);
+    if (s === null || e === null || e < s) continue;
+    for (let m = s; m <= Math.min(e, nowIdx); m++) covered.add(m);
+  }
+  return covered.size;
+}

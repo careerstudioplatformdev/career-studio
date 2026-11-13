@@ -16,6 +16,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_usage: {
+        Row: {
+          created_at: string
+          feature: string
+          id: number
+          units: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          id?: never
+          units?: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          id?: never
+          units?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_events: {
         Row: {
           action: string
@@ -44,6 +68,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "audit_events_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "resumes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_applications: {
+        Row: {
+          applied_at: string | null
+          approved_at: string | null
+          company: string
+          cover_letter: string
+          created_at: string
+          description: string
+          id: string
+          job_title: string
+          job_url: string
+          match_score: number | null
+          notes: string
+          resume_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          approved_at?: string | null
+          company?: string
+          cover_letter?: string
+          created_at?: string
+          description?: string
+          id?: string
+          job_title?: string
+          job_url?: string
+          match_score?: number | null
+          notes?: string
+          resume_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          applied_at?: string | null
+          approved_at?: string | null
+          company?: string
+          cover_letter?: string
+          created_at?: string
+          description?: string
+          id?: string
+          job_title?: string
+          job_url?: string
+          match_score?: number | null
+          notes?: string
+          resume_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_resume_id_fkey"
             columns: ["resume_id"]
             isOneToOne: false
             referencedRelation: "resumes"
@@ -117,6 +203,7 @@ export type Database = {
           created_at: string
           id: string
           origin: string
+          parent_id: string | null
           qa_state: Json
           status: string
           title: string
@@ -129,6 +216,7 @@ export type Database = {
           created_at?: string
           id?: string
           origin: string
+          parent_id?: string | null
           qa_state?: Json
           status?: string
           title?: string
@@ -141,13 +229,22 @@ export type Database = {
           created_at?: string
           id?: string
           origin?: string
+          parent_id?: string | null
           qa_state?: Json
           status?: string
           title?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "resumes_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "resumes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

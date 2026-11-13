@@ -2,6 +2,7 @@
 // Each category lists the checks behind its points so users can see why.
 
 import { currentMonth, toMonthIndex } from "./dates";
+import { findContentFlags } from "./red-flags";
 import type { Experience, ResumeContent } from "./types";
 
 export type Check = { label: string; passed: boolean; tip?: string };
@@ -14,10 +15,13 @@ export type Category = {
   checks: Check[];
 };
 
+export type RedFlagCategory = "timeline" | "wording" | "evidence" | "contact" | "consistency";
+
 export type RedFlag = {
   severity: "high" | "medium" | "low";
   message: string;
   entryId?: string;
+  category?: RedFlagCategory;
 };
 
 export type QualityReport = {
@@ -155,7 +159,7 @@ export function scoreResume(r: ResumeContent, now: Date = new Date()): QualityRe
     },
   ]);
 
-  const redFlags = findRedFlags(r, now);
+  const redFlags = [...findRedFlags(r, now), ...findContentFlags(r)];
   const dated = [...r.experience, ...r.education];
   const allDated =
     dated.length > 0 &&
@@ -216,19 +220,19 @@ export function findRedFlags(r: ResumeContent, now: Date = new Date()): RedFlag[
     const s = toMonthIndex(e.startDate);
     const end = e.current ? nowIdx : toMonthIndex(e.endDate, true);
     if (s === null) {
-      flags.push({ severity: "medium", message: `${e.name} has no start date.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "medium", message: `${e.name} has no start date.`, entryId: e.id });
     }
     if (!e.current && end === null) {
-      flags.push({ severity: "medium", message: `${e.name} has no end date. Mark it as current if it is ongoing.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "medium", message: `${e.name} has no end date. Mark it as current if it is ongoing.`, entryId: e.id });
     }
     if (s !== null && end !== null && end < s) {
-      flags.push({ severity: "high", message: `${e.name} ends before it starts.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "high", message: `${e.name} ends before it starts.`, entryId: e.id });
     }
     if (s !== null && s > nowIdx) {
-      flags.push({ severity: "high", message: `${e.name} starts in the future.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "high", message: `${e.name} starts in the future.`, entryId: e.id });
     }
     if (!e.current && end !== null && end > nowIdx) {
-      flags.push({ severity: "high", message: `${e.name} ends in the future. Mark it as current instead.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "high", message: `${e.name} ends in the future. Mark it as current instead.`, entryId: e.id });
     }
   }
 
@@ -249,12 +253,14 @@ export function findRedFlags(r: ResumeContent, now: Date = new Date()): RedFlag[
     const gap = cur.s - prev.end;
     if (gap > 6) {
       flags.push({
+        category: "timeline",
         severity: "low",
         message: `${Math.floor(gap)}-month gap between ${label(prev.e)} and ${label(cur.e)}. Consider noting study, caregiving, projects or other activity if you're comfortable sharing it.`,
         entryId: cur.e.id,
       });
     } else if (cur.s < prev.end && prev.end - cur.s >= 2) {
       flags.push({
+        category: "timeline",
         severity: "low",
         message: `${label(prev.e)} and ${label(cur.e)} overlap. That's fine if you held both roles at once; otherwise check the dates.`,
         entryId: cur.e.id,
@@ -267,7 +273,7 @@ export function findRedFlags(r: ResumeContent, now: Date = new Date()): RedFlag[
   for (const e of r.experience) {
     const key = `${e.title}|${e.organization}|${e.startDate}`.toLowerCase();
     if (e.title && seen.has(key)) {
-      flags.push({ severity: "medium", message: `${label(e)} appears more than once.`, entryId: e.id });
+      flags.push({ category: "timeline", severity: "medium", message: `${label(e)} appears more than once.`, entryId: e.id });
     }
     seen.add(key);
   }

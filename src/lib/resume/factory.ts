@@ -3,6 +3,7 @@ import type {
   Education,
   Experience,
   FactSource,
+  PageTarget,
   Project,
   ResumeContent,
 } from "./types";
@@ -34,6 +35,7 @@ export function emptyResume(): ResumeContent {
     certifications: [],
     skills: [],
     skillsConfirmed: false,
+    pageTarget: 1,
   };
 }
 
@@ -42,7 +44,7 @@ export function newExperience(source: FactSource = "typed", kind: Experience["ki
     id: newId(),
     source,
     confirmed: false,
-    confidence: source === "typed" ? "high" : undefined,
+    confidence: source === "typed" || source === "ai" ? "high" : undefined,
     kind,
     title: "",
     organization: "",
@@ -59,7 +61,7 @@ export function newEducation(source: FactSource = "typed"): Education {
     id: newId(),
     source,
     confirmed: false,
-    confidence: source === "typed" ? "high" : undefined,
+    confidence: source === "typed" || source === "ai" ? "high" : undefined,
     school: "",
     credential: "",
     field: "",
@@ -75,7 +77,7 @@ export function newProject(source: FactSource = "typed"): Project {
     id: newId(),
     source,
     confirmed: false,
-    confidence: source === "typed" ? "high" : undefined,
+    confidence: source === "typed" || source === "ai" ? "high" : undefined,
     name: "",
     role: "",
     link: "",
@@ -88,7 +90,7 @@ export function newCertification(source: FactSource = "typed"): Certification {
     id: newId(),
     source,
     confirmed: false,
-    confidence: source === "typed" ? "high" : undefined,
+    confidence: source === "typed" || source === "ai" ? "high" : undefined,
     name: "",
     issuer: "",
     date: "",
@@ -108,5 +110,11 @@ export function normalizeResume(input: Partial<ResumeContent> | null | undefined
     projects: input.projects ?? [],
     certifications: input.certifications ?? [],
     skills: input.skills ?? [],
+    pageTarget: clampPages(input.pageTarget),
   };
+}
+
+export function clampPages(n: unknown): PageTarget {
+  const v = Math.round(Number(n));
+  return (Number.isFinite(v) ? Math.min(5, Math.max(1, v)) : 1) as PageTarget;
 }

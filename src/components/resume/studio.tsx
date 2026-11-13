@@ -16,21 +16,37 @@ import {
   SummaryEditor,
   TargetRoleEditor,
 } from "./editors";
-import { ExportPanel, JdMatchPanel, QualityPanel, ResumePreview } from "./panels";
+import { useAiEnabled } from "./ai";
+import { FitPanel } from "./fit-panel";
+import { FScanPanel } from "./fscan-panel";
+import { ImprovePanel } from "./improve-panel";
+import { InterviewPanel } from "./interview-panel";
+import { ExportPanel, QualityPanel, ResumePreview } from "./panels";
 import { SaveIndicator, useResume } from "./use-resume";
 
-type Tab = "edit" | "check" | "match" | "export";
+type Tab = "edit" | "improve" | "check" | "fit" | "interview" | "export";
 const TABS: { key: Tab; label: string }[] = [
   { key: "edit", label: "Edit & confirm" },
-  { key: "check", label: "Quality check" },
-  { key: "match", label: "Match a job" },
+  { key: "improve", label: "Improve with AI" },
+  { key: "check", label: "Checks" },
+  { key: "fit", label: "Fit to a job" },
+  { key: "interview", label: "Interview prep" },
   { key: "export", label: "Download" },
 ];
 
 export function Studio({ id }: { id: string }) {
   const router = useRouter();
-  const { row, loadError, saveStatus, setContent, setTitle, flush, markApproved, supabase } = useResume(id);
-  const [tab, setTab] = useState<Tab>("edit");
+  const { row, loadError, saveStatus, setContent, setTitle, setQaState, flush, markApproved, supabase } = useResume(id);
+  // Deep links from the Applications page: ?tab=fit&app=<id>
+  const [tab, setTab] = useState<Tab>(() => {
+    const t = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("tab");
+    return TABS.some((x) => x.key === t) ? (t as Tab) : "edit";
+  });
+  const [applicationId] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("app"),
+  );
+  const [overlay, setOverlay] = useState(false);
+  const aiEnabled = useAiEnabled();
   const [showUnplaced, setShowUnplaced] = useState(true);
 
   if (loadError) return <div className="mx-auto max-w-3xl px-4 py-10"><Notice tone="bad">{loadError}</Notice></div>;
@@ -58,6 +74,7 @@ export function Studio({ id }: { id: string }) {
     }
   }
 
+  const jd = row.qa_state.jobDescription ?? "";
   const unplaced = row.qa_state.unplaced ?? [];
   const warnings = row.qa_state.warnings ?? [];
 
@@ -78,7 +95,9 @@ export function Studio({ id }: { id: string }) {
         <div className="flex items-center gap-3">
           <SaveIndicator status={saveStatus} />
           {row.origin === "qa" && (
-            <Link href={`/resumes/${id}/build`} className={buttonClass("secondary", "sm")}>Guided questions</Link>
+            <Link href={`/resumes/${id}/build`} className={buttonClass("secondary", "sm")}>
+              {row.qa_state.mode === "guided" ? "Guided questions" : "Career coach"}
+            </Link>
           )}
         </div>
       </div>
@@ -103,6 +122,15 @@ export function Studio({ id }: { id: string }) {
         <div className="min-w-0 space-y-8" role="tabpanel">
           {tab === "edit" && (
             <>
+              {row.origin === "qa" && [...r.experience, ...r.education, ...r.projects].some((e) => e.source === "ai" && !e.confirmed) && (
+                <Notice tone="brand">
+                  Your coach drafted these entries from your own words. Read each one, fix anything that isn&apos;t exactly right,
+                  and tick &quot;accurate&quot; to confirm it. Nothing goes on your final resume until you do.
+                </Notice>
+              )}
+              {row.origin === "tailored" && (
+                <Notice tone="brand">This is a tailored copy for one job. Your original resume is unchanged.</Notice>
+              )}
               {row.origin === "upload" && (warnings.length > 0 || pending.length > 0) && (
                 <Notice tone="brand">
                   We pulled these details from your upload. Please check each one, fix anything we got wrong, and tick
@@ -134,15 +162,43 @@ export function Studio({ id }: { id: string }) {
               </div>
             </>
           )}
-          {tab === "check" && <QualityPanel resume={r} />}
-          {tab === "match" && <JdMatchPanel resume={r} />}
+          {tab === "improve" && (
+            <ImprovePanel
+              resumeId={id}
+              resume={r}
+              story={row.qa_state.story ?? ""}
+              jobDescription={jd}
+              aiEnabled={aiEnabled}
+              supabase={supabase}
+              onChange={setContent}
+            />
+          )}
+          {tab === "check" && (
+            <>
+              <FScanPanel resume={r} jobDescription={jd} overlay={overlay} onToggleOverlay={() => setOverlay((o) => !o)} />
+              <QualityPanel resume={r} />
+            </>
+          )}
+          {tab === "fit" && (
+            <FitPanel
+              row={row}
+              jobDescription={jd}
+              onJobDescription={(v) => setQaState({ ...row.qa_state, jobDescription: v })}
+              aiEnabled={aiEnabled}
+              supabase={supabase}
+              flush={flush}
+              onChange={setContent}
+              applicationId={applicationId}
+            />
+          )}
+          {tab === "interview" && <InterviewPanel resume={r} jobDescription={jd} aiEnabled={aiEnabled} />}
           {tab === "export" && (
-            <ExportPanel resumeId={id} resume={r} supabase={supabase} flush={flush} onApproved={markApproved} onJump={jump} />
+            <ExportPanel resumeId={id} resume={r} supabase={supabase} flush={flush} onApproved={markApproved} onJump={jump} onChange={setContent} />
           )}
         </div>
         <aside className="lg:sticky lg:top-6 lg:self-start">
           <h2 className="mb-2 text-sm font-semibold text-ink">Preview</h2>
-          <ResumePreview resume={r} />
+          <ResumePreview resume={r} fscan={overlay && tab === "check"} />
         </aside>
       </div>
     </div>

@@ -18,6 +18,7 @@ export async function SiteNav() {
     return (
       <nav className="flex flex-wrap items-center gap-1 sm:flex-nowrap sm:gap-2">
         <WhatsNewLink />
+        <Link href="/roadmap" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>Roadmap</Link>
         <Link href="/login" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>Log in</Link>
         <Link href="/signup" className={`${buttonClass("primary", "sm")} whitespace-nowrap`}>Sign up</Link>
       </nav>
@@ -27,6 +28,7 @@ export async function SiteNav() {
     <nav className="flex flex-wrap items-center gap-0.5 sm:flex-nowrap sm:gap-2">
       <WhatsNewLink />
       <Link href="/dashboard" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>My resumes</Link>
+      <Link href="/applications" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>Applications</Link>
       <Link href="/account" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>Account</Link>
       <form action={signOut}>
         <button type="submit" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>Log out</button>

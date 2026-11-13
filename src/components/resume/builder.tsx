@@ -17,6 +17,8 @@ import {
   TargetRoleEditor,
 } from "./editors";
 import { RedFlags, ResumePreview } from "./panels";
+import { useAiEnabled } from "./ai";
+import { StoryBuilder } from "./story-builder";
 import { SaveIndicator, useResume } from "./use-resume";
 
 type Step = {
@@ -109,6 +111,7 @@ const LEVELS: { value: ExperienceLevel; title: string; body: string }[] = [
 export function Builder({ id }: { id: string }) {
   const router = useRouter();
   const { row, loadError, saveStatus, setContent, setQaState, flush } = useResume(id);
+  const aiEnabled = useAiEnabled();
 
   const steps = useMemo<Step[]>(() => {
     const level = row?.qa_state.experienceLevel ?? "some";
@@ -122,6 +125,13 @@ export function Builder({ id }: { id: string }) {
 
   if (loadError) return <div className="mx-auto max-w-3xl px-4 py-10"><Notice tone="bad">{loadError}</Notice></div>;
   if (!row) return <div className="mx-auto max-w-3xl px-4 py-10 text-muted">Loading your resume…</div>;
+
+  const mode = row.qa_state.mode ?? (!row.qa_state.step || row.qa_state.step === "level" ? "story" : "guided");
+  if (mode === "story") {
+    return (
+      <StoryBuilder id={id} row={row} saveStatus={saveStatus} setContent={setContent} setQaState={setQaState} flush={flush} aiEnabled={aiEnabled} />
+    );
+  }
 
   const r = row.content;
   const stepKey = row.qa_state.step ?? "level";
@@ -146,6 +156,13 @@ export function Builder({ id }: { id: string }) {
         <p className="text-sm font-medium text-brand">Let&apos;s build your resume</p>
         <h1 className="mt-1 text-2xl font-bold text-ink">How much work experience do you have?</h1>
         <p className="mt-1 text-muted">We&apos;ll adjust the questions to fit. There&apos;s no wrong answer.</p>
+        {aiEnabled && (
+          <p className="mt-2 text-sm">
+            <button type="button" className="text-brand underline" onClick={() => setQaState({ ...row.qa_state, mode: "story" })}>
+              Or tell us your story and let the AI coach draft it →
+            </button>
+          </p>
+        )}
         <div className="mt-6 grid gap-3">
           {LEVELS.map((l) => (
             <button

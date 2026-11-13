@@ -11,7 +11,7 @@ const choices = [
     mode: "qa",
     icon: "✎",
     title: "Create my first resume",
-    body: "Answer guided questions. Great for students, career changers and returners.",
+    body: "Tell your story in your own words. An AI career coach turns it into a professional resume. No resume know-how needed.",
   },
 ];
 
