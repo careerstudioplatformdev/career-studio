@@ -13,6 +13,20 @@ export type Release = {
 
 export const RELEASES: Release[] = [
   {
+    version: "0.4.2",
+    date: "2026-11-19",
+    title: "Easier sign-up and password reset",
+    summary: "Sign-up now tells you clearly when you already have an account, and you can reset a forgotten password.",
+    added: [
+      "\"Forgot password?\" on the log-in page, with an email link to choose a new password.",
+      "A \"Resend email\" button after sign-up, plus a reminder to check spam.",
+    ],
+    fixed: [
+      "Signing up with an email that already has an account used to say \"check your inbox\" even though no email was sent. It now explains that you already have an account and offers log in or password reset.",
+      "Expired or already-used email links now show a clear message instead of a blank log-in page.",
+    ],
+  },
+  {
     version: "0.4.1",
     date: "2026-11-19",
     title: "A calmer, cleaner look",
