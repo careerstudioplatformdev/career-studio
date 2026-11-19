@@ -13,6 +13,20 @@ export type Release = {
 
 export const RELEASES: Release[] = [
   {
+    version: "0.4.1",
+    date: "2026-11-19",
+    title: "A calmer, cleaner look",
+    summary: "Career Studio has a new look: mostly white, grey for structure, and a small orange signal that shows where you are and what to do next.",
+    improved: [
+      "New logo: a segmented line that stands for \"one question at a time\".",
+      "Clearer headings in Inter Tight, and calmer black buttons with larger, easier-to-tap targets.",
+      "Step-by-step progress shows one segment per question, with your current step in orange.",
+      "Your live resume preview now sits in its own framed panel beside each question.",
+      "Selected options show a check mark and a dark outline, so they don't rely on color alone.",
+      "Links and small tags use a darker orange that's easier to read.",
+    ],
+  },
+  {
     version: "0.4.0",
     date: "2026-11-13",
     title: "Your AI career coach, seven-agent review and job applications",

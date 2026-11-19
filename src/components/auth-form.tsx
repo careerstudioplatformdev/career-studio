@@ -79,7 +79,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <input type="checkbox" required checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1" />
           <span>
             I agree that Career Studio may store and process my resume information to provide this service, as described in the{" "}
-            <Link href="/privacy" className="text-brand underline">privacy notice</Link>. I can download or delete my data at any time.
+            <Link href="/privacy" className="font-medium text-orange-ink underline underline-offset-2">privacy notice</Link>. I can download or delete my data at any time.
           </span>
         </label>
       )}
@@ -89,9 +89,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       </Button>
       <p className="text-center text-sm text-muted">
         {mode === "signup" ? (
-          <>Already have an account? <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-brand">Log in</Link></>
+          <>Already have an account? <Link href={`/login?next=${encodeURIComponent(next)}`} className="font-medium text-orange-ink underline underline-offset-2">Log in</Link></>
         ) : (
-          <>New here? <Link href={`/signup?next=${encodeURIComponent(next)}`} className="text-brand">Create an account</Link></>
+          <>New here? <Link href={`/signup?next=${encodeURIComponent(next)}`} className="font-medium text-orange-ink underline underline-offset-2">Create an account</Link></>
         )}
       </p>
     </form>

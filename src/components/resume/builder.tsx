@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
-import { Button, Card, Notice } from "@/components/ui";
+import { Button, Card, CheckIcon, Eyebrow, Notice, StepProgress } from "@/components/ui";
 import { pendingConfirmations } from "@/lib/resume/facts";
 import type { ExperienceLevel, ResumeContent } from "@/lib/resume/types";
 import {
@@ -123,8 +123,8 @@ export function Builder({ id }: { id: string }) {
     }];
   }, [row?.qa_state.experienceLevel]);
 
-  if (loadError) return <div className="mx-auto max-w-3xl px-4 py-10"><Notice tone="bad">{loadError}</Notice></div>;
-  if (!row) return <div className="mx-auto max-w-3xl px-4 py-10 text-muted">Loading your resume…</div>;
+  if (loadError) return <div className="mx-auto max-w-3xl px-6 py-10"><Notice tone="bad">{loadError}</Notice></div>;
+  if (!row) return <div className="mx-auto max-w-3xl px-6 py-10 text-muted">Loading your resume…</div>;
 
   const mode = row.qa_state.mode ?? (!row.qa_state.step || row.qa_state.step === "level" ? "story" : "guided");
   if (mode === "story") {
@@ -152,13 +152,13 @@ export function Builder({ id }: { id: string }) {
   // First question: experience level, which decides the order of everything else.
   if (stepKey === "level" || !step) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10">
-        <p className="text-sm font-medium text-brand">Let&apos;s build your resume</p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">How much work experience do you have?</h1>
+      <div className="mx-auto max-w-3xl px-6 py-10">
+        <Eyebrow>Let&apos;s build your resume</Eyebrow>
+        <h1 className="mt-1 text-[30px] font-semibold text-ink sm:text-[36px]">How much work experience do you have?</h1>
         <p className="mt-1 text-muted">We&apos;ll adjust the questions to fit. There&apos;s no wrong answer.</p>
         {aiEnabled && (
           <p className="mt-2 text-sm">
-            <button type="button" className="text-brand underline" onClick={() => setQaState({ ...row.qa_state, mode: "story" })}>
+            <button type="button" className="font-medium text-orange-ink underline underline-offset-2" onClick={() => setQaState({ ...row.qa_state, mode: "story" })}>
               Or tell us your story and let the AI coach draft it →
             </button>
           </p>
@@ -169,10 +169,14 @@ export function Builder({ id }: { id: string }) {
               key={l.value}
               type="button"
               onClick={() => setQaState({ ...row.qa_state, experienceLevel: l.value, step: ORDERS[l.value][0] })}
-              className={`rounded-xl border-2 bg-white p-4 text-left transition hover:border-brand ${row.qa_state.experienceLevel === l.value ? "border-brand" : "border-line"}`}
+              aria-pressed={row.qa_state.experienceLevel === l.value}
+              className={`flex min-h-11 items-start justify-between gap-3 rounded-xl p-4 text-left transition ${row.qa_state.experienceLevel === l.value ? "border-[1.5px] border-ink bg-grey-50" : "border border-hairline bg-white hover:border-grey-400"}`}
             >
-              <div className="font-semibold text-ink">{l.title}</div>
-              <div className="text-sm text-muted">{l.body}</div>
+              <span>
+                <span className="block font-semibold text-ink">{l.title}</span>
+                <span className="block text-sm text-muted">{l.body}</span>
+              </span>
+              {row.qa_state.experienceLevel === l.value && <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-ink" />}
             </button>
           ))}
         </div>
@@ -181,24 +185,23 @@ export function Builder({ id }: { id: string }) {
   }
 
   const pending = pendingConfirmations(r);
-  const progress = Math.round(((index + 1) / steps.length) * 100);
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_minmax(0,26rem)]">
+    <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-8 lg:grid-cols-[1fr_minmax(0,26rem)]">
       <div>
         <div className="mb-4 flex items-center justify-between">
           <span className="text-sm text-muted">Step {index + 1} of {steps.length}</span>
           <SaveIndicator status={saveStatus} />
         </div>
-        <div className="mb-6 h-1.5 rounded-full bg-line" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Progress">
-          <div className="h-1.5 rounded-full bg-brand transition-all" style={{ width: `${progress}%` }} />
+        <div className="mb-6">
+          <StepProgress current={index + 1} total={steps.length} />
         </div>
 
-        <h1 className="text-2xl font-bold text-ink">{step.title}</h1>
+        <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">{step.title}</h1>
         <p className="mt-1 text-muted">{step.intro}</p>
 
         {step.prompts && (
-          <Card className="mt-4 bg-brand-soft/40">
+          <Card className="mt-4 bg-grey-100">
             <p className="text-sm font-medium text-ink">Questions to think about</p>
             <ul className="mt-1 list-disc pl-5 text-sm text-muted">
               {step.prompts.map((p) => <li key={p}>{p}</li>)}
@@ -234,7 +237,7 @@ export function Builder({ id }: { id: string }) {
 
       <aside className="lg:sticky lg:top-6 lg:self-start">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-ink">Live preview</h2>
+          <h2 className="text-sm font-semibold text-ink">Your resume</h2>
           <span className="text-xs text-muted">{pending.length} to confirm</span>
         </div>
         <ResumePreview resume={r} />
@@ -244,7 +247,8 @@ export function Builder({ id }: { id: string }) {
               key={s.key}
               type="button"
               onClick={() => go(s.key)}
-              className={`rounded-full px-2.5 py-1 text-xs ${i === index ? "bg-brand text-white" : "bg-white text-muted hover:text-ink border border-line"}`}
+              aria-current={i === index ? "step" : undefined}
+              className={`min-h-11 rounded-full px-3.5 text-[13px] ${i === index ? "border-[1.5px] border-ink bg-grey-50 font-semibold text-ink" : "border border-hairline bg-white text-grey-600 hover:text-ink"}`}
             >
               {STEP_SHORT[s.key] ?? s.title}
             </button>

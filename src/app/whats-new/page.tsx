@@ -3,7 +3,7 @@ import { CURRENT_RELEASE, RELEASES, formatReleaseDate, type Release } from "@/li
 
 export const metadata = { title: "What's new · Career Studio" };
 
-function ChangeList({ label, tone, items }: { label: string; tone: "ok" | "brand" | "warn"; items?: string[] }) {
+function ChangeList({ label, tone, items }: { label: string; tone: "ok" | "info" | "warn"; items?: string[] }) {
   if (!items?.length) return null;
   return (
     <div className="mt-4">
@@ -20,7 +20,7 @@ function ReleaseBody({ release }: { release: Release }) {
     <>
       <p className="mt-2 text-muted">{release.summary}</p>
       <ChangeList label="New" tone="ok" items={release.added} />
-      <ChangeList label="Improved" tone="brand" items={release.improved} />
+      <ChangeList label="Improved" tone="info" items={release.improved} />
       <ChangeList label="Fixed" tone="warn" items={release.fixed} />
     </>
   );
@@ -29,13 +29,13 @@ function ReleaseBody({ release }: { release: Release }) {
 export default function WhatsNew() {
   const previous = RELEASES.slice(1);
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-ink">What&apos;s new</h1>
+    <div className="mx-auto max-w-3xl px-6 py-10">
+      <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">What&apos;s new</h1>
       <p className="mt-1 text-muted">What changed in each version of Career Studio.</p>
 
-      <Card className="mt-6 border-brand/40">
+      <Card className="mt-6 border-grey-300">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone="brand">Latest · v{CURRENT_RELEASE.version}</Badge>
+          <Badge tone="info">Latest · v{CURRENT_RELEASE.version}</Badge>
           <span className="text-sm text-muted">{formatReleaseDate(CURRENT_RELEASE.date)}</span>
         </div>
         <h2 className="mt-3 text-xl font-semibold text-ink">{CURRENT_RELEASE.title}</h2>

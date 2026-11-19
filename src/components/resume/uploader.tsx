@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { Button, Notice } from "@/components/ui";
+import { Button, buttonClass, Notice } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import type { ParseResult } from "@/lib/resume/parse-text";
 
@@ -65,7 +65,7 @@ export function Uploader() {
           const f = e.dataTransfer.files[0];
           if (f) setFile(f);
         }}
-        className={`rounded-2xl border-2 border-dashed p-10 text-center transition ${dragging ? "border-brand bg-brand-soft" : "border-line bg-white"}`}
+        className={`rounded-2xl border-2 border-dashed p-10 text-center transition ${dragging ? "border-ink bg-grey-100" : "border-line bg-white"}`}
       >
         <p className="font-medium text-ink">{file ? file.name : "Drag your resume here"}</p>
         <p className="mt-1 text-sm text-muted">PDF or Word (.docx), up to 5 MB</p>
@@ -77,7 +77,7 @@ export function Uploader() {
           id="resume-file"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
-        <label htmlFor="resume-file" className="mt-4 inline-block cursor-pointer rounded-lg border border-line px-4 py-2 text-sm font-medium hover:border-brand hover:text-brand">
+        <label htmlFor="resume-file" className={`mt-4 cursor-pointer ${buttonClass("secondary")}`}>
           Choose a file
         </label>
       </div>

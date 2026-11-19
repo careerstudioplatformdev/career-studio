@@ -36,7 +36,7 @@ export function FScanPanel({
             what they see in those few seconds{jobDescription.trim() ? ", using the job you're targeting" : ""}.
           </p>
         </div>
-        <div className={`text-3xl font-bold ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : "text-bad"}`}>
+        <div className={`font-[family-name:var(--font-display)] text-4xl font-semibold tracking-[-0.03em] ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : "text-bad"}`}>
           {result.score}
           <span className="text-base font-medium text-muted">/100</span>
         </div>

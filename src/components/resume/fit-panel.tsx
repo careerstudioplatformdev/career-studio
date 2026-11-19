@@ -152,7 +152,7 @@ export function FitPanel({
                 <p className="text-sm text-muted">Each point comes from a rule below. It&apos;s a guide, not a prediction of hiring.</p>
               </div>
               <div className="text-right">
-                <div className={`text-3xl font-bold ${fit.score >= 75 ? "text-ok" : fit.score >= 50 ? "text-warn" : "text-bad"}`}>
+                <div className={`font-[family-name:var(--font-display)] text-4xl font-semibold tracking-[-0.03em] ${fit.score >= 75 ? "text-ok" : fit.score >= 50 ? "text-warn" : "text-bad"}`}>
                   {fit.score}
                   <span className="text-base font-medium text-muted">/100</span>
                 </div>
@@ -248,7 +248,7 @@ export function FitPanel({
           {tailor.summary && tailor.summary !== resume.summary && (
             <div className="mt-4">
               <h4 className="text-sm font-semibold">Summary for this job</h4>
-              <p className="mt-1 rounded bg-canvas p-2 text-sm">{tailor.summary}</p>
+              <p className="mt-1 rounded bg-grey-50 p-2 text-sm">{tailor.summary}</p>
               <Button size="sm" className="mt-2" onClick={() => change({ ...resume, summary: tailor.summary, summaryConfirmed: false })}>Use this summary</Button>
             </div>
           )}
@@ -256,7 +256,7 @@ export function FitPanel({
             <div className="mt-4 space-y-3">
               <h4 className="text-sm font-semibold">Bullet rewrites</h4>
               {tailor.bulletSuggestions.map((s) => (
-                <div key={s.original} className="rounded-lg border border-line p-3 text-sm">
+                <div key={s.original} className="rounded-xl border border-hairline p-3 text-sm">
                   <p className="text-muted line-through">{s.original}</p>
                   <p className="mt-1 text-ink">{s.suggested}</p>
                   {s.keywordsUsed.length > 0 && <p className="mt-1 text-xs text-muted">Surfaces: {s.keywordsUsed.join(", ")}</p>}
@@ -291,7 +291,7 @@ export function FitPanel({
             <div className="mt-4">
               <h4 className="text-sm font-semibold">Cover letter draft</h4>
               <p className="text-xs text-muted">Fill in anything in [brackets] and read it carefully before sending.</p>
-              <pre className="mt-2 whitespace-pre-wrap rounded bg-canvas p-3 font-sans text-sm">{tailor.coverLetter}</pre>
+              <pre className="mt-2 whitespace-pre-wrap rounded bg-grey-50 p-3 font-sans text-sm">{tailor.coverLetter}</pre>
               <Button size="sm" variant="secondary" className="mt-2" onClick={() => navigator.clipboard?.writeText(tailor.coverLetter)}>Copy</Button>
             </div>
           )}

@@ -11,21 +11,21 @@ export default async function Dashboard() {
     .order("updated_at", { ascending: false });
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
+    <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-ink">My resumes</h1>
-        <Link href="/applications" className="text-sm font-medium text-brand underline">Track job applications →</Link>
+        <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">My resumes</h1>
+        <Link href="/applications" className="text-sm font-medium font-medium text-orange-ink underline underline-offset-2">Track job applications →</Link>
       </div>
 
       {resumes && resumes.length > 0 ? (
-        <ul className="mt-6 divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">
+        <ul className="mt-6 divide-y divide-line overflow-hidden rounded-2xl border border-hairline bg-white">
           {resumes.map((r) => {
             const inQa = r.origin === "qa" && !r.qa_state?.completed;
             return (
               <li key={r.id}>
                 <Link
                   href={inQa ? `/resumes/${r.id}/build` : `/resumes/${r.id}`}
-                  className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-canvas"
+                  className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-grey-50"
                 >
                   <div>
                     <div className="font-medium text-ink">{r.title}</div>
@@ -37,7 +37,7 @@ export default async function Dashboard() {
                   {r.status === "approved" ? (
                     <Badge tone="ok">Approved</Badge>
                   ) : inQa ? (
-                    <Badge tone="brand">In progress</Badge>
+                    <Badge tone="info">In progress</Badge>
                   ) : (
                     <Badge>Draft</Badge>
                   )}

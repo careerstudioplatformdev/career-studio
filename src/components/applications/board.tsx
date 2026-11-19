@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Badge, Button, Card, Field, Notice, TextArea, buttonClass } from "@/components/ui";
+import { Badge, Button, buttonClass, Card, Field, Notice, selectClass, TextArea } from "@/components/ui";
 import {
   STATUSES,
   STATUS_LABEL,
@@ -85,17 +85,17 @@ export function ApplicationsBoard() {
   const counts = Object.fromEntries(STATUSES.map((s) => [s, apps?.filter((a) => a.status === s).length ?? 0]));
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Applications</h1>
+          <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">Applications</h1>
           <p className="text-muted">Save jobs, tailor a resume for each, approve, apply, and track what happens.</p>
         </div>
         <Button onClick={() => setAdding((v) => !v)}>{adding ? "Close" : "+ Add a job"}</Button>
       </div>
 
       <div className="mt-4">
-        <Notice tone="brand">
+        <Notice tone="info">
           <strong>You stay in control.</strong> Career Studio prepares a tailored resume, cover letter and checklist for each job; you
           approve every application and submit it on the employer&apos;s site. We never apply on your behalf. One-click submission will
           only come through job platforms that allow it, and only with your permission.
@@ -163,7 +163,7 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className={`rounded-full px-3 py-1 text-sm ${active ? "bg-brand text-white" : "border border-line bg-white text-ink"}`}
+      className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-3.5 text-sm ${active ? "border-[1.5px] border-ink bg-grey-50 font-semibold text-ink" : "border border-hairline bg-white text-grey-700 hover:border-grey-400"}`}
     >
       {children}
     </button>
@@ -205,8 +205,8 @@ function AddJob({ resumes, onAdded, onError }: { resumes: ResumeLite[]; onAdded:
         <Field label="Company" value={company} onChange={(e) => setCompany(e.target.value)} />
         <Field label="Link to the posting" type="url" placeholder="https://…" value={url} onChange={(e) => setUrl(e.target.value)} hint={url && !isSafeUrl(url) ? "Enter a full link starting with https://" : undefined} />
         <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">Resume to use</span>
-          <select className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm" value={resumeId} onChange={(e) => setResumeId(e.target.value)}>
+          <span className="mb-1.5 block text-[13px] font-medium text-grey-700">Resume to use</span>
+          <select className={selectClass} value={resumeId} onChange={(e) => setResumeId(e.target.value)}>
             <option value="">None yet</option>
             {resumes.map((r) => <option key={r.id} value={r.id}>{r.title}</option>)}
           </select>
@@ -249,13 +249,13 @@ function AppCard({
           <h3 className="font-semibold text-ink">{app.job_title || "Untitled job"}{app.company && <span className="font-normal text-muted"> · {app.company}</span>}</h3>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
             {app.match_score !== null && <Badge tone={app.match_score >= 75 ? "ok" : app.match_score >= 50 ? "warn" : "bad"}>Match {app.match_score}</Badge>}
-            {resume ? <Link href={`/resumes/${resume.id}`} className="text-brand underline">{resume.title}</Link> : <span className="text-muted">No resume attached</span>}
+            {resume ? <Link href={`/resumes/${resume.id}`} className="font-medium text-orange-ink underline underline-offset-2">{resume.title}</Link> : <span className="text-muted">No resume attached</span>}
             {app.applied_at && <span className="text-muted">Applied {new Date(app.applied_at).toLocaleDateString()}</span>}
           </div>
         </div>
         <select
           aria-label="Status"
-          className="rounded-lg border border-line bg-white px-2 py-1.5 text-sm"
+          className={`${selectClass} w-auto`}
           value={app.status}
           onChange={(e) => onUpdate({ status: e.target.value as ApplicationStatus })}
         >
@@ -286,9 +286,9 @@ function AppCard({
             </ul>
           </div>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-ink">Resume</span>
+            <span className="mb-1.5 block text-[13px] font-medium text-grey-700">Resume</span>
             <select
-              className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm"
+              className={selectClass}
               value={app.resume_id ?? ""}
               onChange={(e) => onUpdate({ resume_id: e.target.value || null })}
             >

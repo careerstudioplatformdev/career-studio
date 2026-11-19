@@ -7,7 +7,7 @@ function WhatsNewLink() {
   return (
     <Link href="/whats-new" className={`${buttonClass("ghost", "sm")} whitespace-nowrap`}>
       What&apos;s new
-      <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden />
+      <span className="h-1.5 w-1.5 rounded-full bg-grey-400" aria-hidden />
     </Link>
   );
 }

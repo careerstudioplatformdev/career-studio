@@ -49,8 +49,8 @@ export function Studio({ id }: { id: string }) {
   const aiEnabled = useAiEnabled();
   const [showUnplaced, setShowUnplaced] = useState(true);
 
-  if (loadError) return <div className="mx-auto max-w-3xl px-4 py-10"><Notice tone="bad">{loadError}</Notice></div>;
-  if (!row) return <div className="mx-auto max-w-3xl px-4 py-10 text-muted">Loading your resume…</div>;
+  if (loadError) return <div className="mx-auto max-w-3xl px-6 py-10"><Notice tone="bad">{loadError}</Notice></div>;
+  if (!row) return <div className="mx-auto max-w-3xl px-6 py-10 text-muted">Loading your resume…</div>;
 
   const r = row.content;
   const pending = pendingConfirmations(r);
@@ -79,7 +79,7 @@ export function Studio({ id }: { id: string }) {
   const warnings = row.qa_state.warnings ?? [];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6">
+    <div className="mx-auto max-w-[1200px] px-6 py-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Link href="/dashboard" className={buttonClass("ghost", "sm")}>←</Link>
@@ -88,7 +88,7 @@ export function Studio({ id }: { id: string }) {
             value={row.title}
             size={Math.max(8, row.title.length + 1)}
             onChange={(e) => setTitle(e.target.value)}
-            className="min-w-0 rounded-md border border-transparent bg-transparent px-2 py-1 text-xl font-bold text-ink hover:border-line focus:border-brand focus:outline-none"
+            className="min-w-0 rounded-[10px] border border-transparent bg-transparent px-2 py-1 font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-[-0.015em] text-ink hover:border-line focus:border-ink focus:outline-none"
           />
           {row.status === "approved" ? <Badge tone="ok">Approved</Badge> : <Badge>Draft</Badge>}
         </div>
@@ -109,7 +109,7 @@ export function Studio({ id }: { id: string }) {
             role="tab"
             aria-selected={tab === t.key}
             onClick={() => setTab(t.key)}
-            className={`-mb-px flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium ${tab === t.key ? "border-brand text-brand" : "border-transparent text-muted hover:text-ink"}`}
+            className={`-mb-px flex shrink-0 items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium ${tab === t.key ? "border-ink font-semibold text-ink" : "border-transparent text-muted hover:text-ink"}`}
           >
             {t.label}
             {t.key === "edit" && pending.length > 0 && <Badge tone="warn">{pending.length}</Badge>}
@@ -123,16 +123,16 @@ export function Studio({ id }: { id: string }) {
           {tab === "edit" && (
             <>
               {row.origin === "qa" && [...r.experience, ...r.education, ...r.projects].some((e) => e.source === "ai" && !e.confirmed) && (
-                <Notice tone="brand">
+                <Notice tone="info">
                   Your coach drafted these entries from your own words. Read each one, fix anything that isn&apos;t exactly right,
                   and tick &quot;accurate&quot; to confirm it. Nothing goes on your final resume until you do.
                 </Notice>
               )}
               {row.origin === "tailored" && (
-                <Notice tone="brand">This is a tailored copy for one job. Your original resume is unchanged.</Notice>
+                <Notice tone="info">This is a tailored copy for one job. Your original resume is unchanged.</Notice>
               )}
               {row.origin === "upload" && (warnings.length > 0 || pending.length > 0) && (
-                <Notice tone="brand">
+                <Notice tone="info">
                   We pulled these details from your upload. Please check each one, fix anything we got wrong, and tick
                   &quot;accurate&quot; to confirm it. We never add anything that wasn&apos;t in your file.
                   {warnings.length > 0 && <ul className="mt-2 list-disc pl-5">{warnings.map((w) => <li key={w}>{w}</li>)}</ul>}
@@ -197,7 +197,7 @@ export function Studio({ id }: { id: string }) {
           )}
         </div>
         <aside className="lg:sticky lg:top-6 lg:self-start">
-          <h2 className="mb-2 text-sm font-semibold text-ink">Preview</h2>
+          <h2 className="mb-2 text-sm font-semibold text-ink">Your resume</h2>
           <ResumePreview resume={r} fscan={overlay && tab === "check"} />
         </aside>
       </div>

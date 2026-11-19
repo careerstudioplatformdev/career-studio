@@ -77,6 +77,9 @@ passes, and report any step that fails or gets skipped.
 - `src/lib/resume/`: pure, unit-tested logic (types, scoring, red flags, JD match, parser, DOCX/PDF export).
 - `src/components/resume/`: builder (guided Q&A), studio (edit/check/match/download), editors, panels.
 - Scripts: `npm test` (vitest), `npm run lint`, `npx tsc --noEmit`, `npm run build`.
+- UI follows `docs/STYLE_GUIDE.md` (UI/UX Style Guide v1.0, approved by the product owner) for every screen:
+  white / grey / ink, Signal Orange only for the brand mark, progress and small tags. Tokens live in
+  `src/app/globals.css`; shared pieces (`BrandMark`, `Eyebrow`, `StepProgress`, buttons, inputs) in `src/components/ui.tsx`.
 - Product rule: never invent facts. Unknown stays empty, every entry has a source and a confirmed flag,
   and export requires every fact confirmed plus a final attestation.
 

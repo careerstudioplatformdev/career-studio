@@ -9,7 +9,7 @@ export default async function Account() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-ink">Account and privacy</h1>
+      <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">Account and privacy</h1>
       <Card className="mt-6">
         <dl className="grid grid-cols-[8rem_1fr] gap-y-2 text-sm">
           <dt className="text-muted">Name</dt>

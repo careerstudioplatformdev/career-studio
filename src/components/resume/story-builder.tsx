@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Badge, Button, Card, Field, Notice, TextArea } from "@/components/ui";
+import { Badge, Button, Card, Eyebrow, Field, Notice, TextArea } from "@/components/ui";
 import { clampPages } from "@/lib/resume/factory";
 import { pendingConfirmations } from "@/lib/resume/facts";
 import type { ChatTurn, QaState, ResumeContent, ResumeRow } from "@/lib/resume/types";
@@ -101,10 +101,10 @@ export function StoryBuilder({
   const pending = pendingConfirmations(r).length;
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_minmax(0,26rem)]">
+    <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-8 lg:grid-cols-[1fr_minmax(0,26rem)]">
       <div className="min-w-0">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-sm font-medium text-brand">Create my first resume</p>
+          <Eyebrow>Create my first resume</Eyebrow>
           <SaveIndicator status={saveStatus} />
         </div>
 
@@ -118,7 +118,7 @@ export function StoryBuilder({
 
         {!started ? (
           <>
-            <h1 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">Tell us your story</h1>
+            <h1 className="mt-2 text-[30px] font-semibold text-ink sm:text-[36px]">Tell us your story</h1>
             <p className="mt-1 text-muted">
               Write the way you&apos;d talk to a friend. Our AI career coach turns it into a professional resume, then asks a few
               follow-up questions, one at a time. It only uses what you tell it: nothing is made up, and you approve every line.
@@ -142,7 +142,7 @@ export function StoryBuilder({
                 hint={`${story.trim().split(/\s+/).filter(Boolean).length} words. More detail means fewer follow-up questions. Include your name and email if you like.`}
               />
               <details className="text-sm">
-                <summary className="cursor-pointer font-medium text-brand">Not sure what to write? Ideas to cover</summary>
+                <summary className="cursor-pointer font-medium text-ink underline underline-offset-2">Not sure what to write? Ideas to cover</summary>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-muted">
                   {STORY_PROMPTS.map((p) => <li key={p}>{p}</li>)}
                 </ul>
@@ -164,17 +164,17 @@ export function StoryBuilder({
           </>
         ) : (
           <>
-            <h1 className="mt-2 text-2xl font-bold text-ink">Your career coach</h1>
+            <h1 className="mt-2 text-[30px] font-semibold text-ink sm:text-[36px]">Your career coach</h1>
             <p className="mt-1 text-sm text-muted">Answer in your own words. Skip anything you&apos;d rather not share. Your draft updates on the right.</p>
 
-            <div className="mt-4 max-h-[60vh] space-y-3 overflow-y-auto rounded-xl border border-line bg-white p-4" aria-live="polite">
-              <div className="rounded-lg bg-canvas p-3 text-sm">
+            <div className="mt-4 max-h-[60vh] space-y-3 overflow-y-auto rounded-2xl border border-hairline bg-white p-4" aria-live="polite">
+              <div className="rounded-xl bg-grey-50 p-3 text-sm">
                 <div className="mb-1 text-xs font-medium text-muted">Your story</div>
                 <p className="line-clamp-4 whitespace-pre-wrap text-ink">{story}</p>
               </div>
               {chat.map((t, i) => (
                 <div key={i} className={t.role === "user" ? "flex justify-end" : ""}>
-                  <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${t.role === "user" ? "bg-brand text-white" : "bg-brand-soft text-ink"}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${t.role === "user" ? "bg-ink text-white" : "bg-grey-100 text-ink"}`}>
                     <p className="whitespace-pre-wrap">{t.text}</p>
                     {t.why && <p className="mt-1 text-xs opacity-75">Why: {t.why}</p>}
                   </div>
@@ -242,7 +242,7 @@ export function StoryBuilder({
 
       <aside className="lg:sticky lg:top-6 lg:self-start">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-ink">Live draft</h2>
+          <h2 className="text-sm font-semibold text-ink">Your draft</h2>
           {pending > 0 && <span className="text-xs text-muted">{pending} to confirm later</span>}
         </div>
         <ResumePreview resume={r} />

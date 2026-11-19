@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Badge, Button, Card, Notice, TextArea } from "@/components/ui";
+import { Badge, Button, Card, Notice, selectClass, TextArea } from "@/components/ui";
 import { resumeQuestions, type InterviewQuestion } from "@/lib/resume/interview";
 import type { ResumeContent } from "@/lib/resume/types";
 import { callAi } from "./ai";
@@ -67,7 +67,7 @@ export function InterviewPanel({ resume, jobDescription, aiEnabled }: { resume: 
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-sm">
             <span className="mb-1 block font-medium">Practice session</span>
-            <select className="rounded-lg border border-line bg-white px-3 py-2 text-sm" value={minutes} onChange={(e) => setMinutes(Number(e.target.value))}>
+            <select className={`${selectClass} w-auto`} value={minutes} onChange={(e) => setMinutes(Number(e.target.value))}>
               {SESSIONS.map((m) => <option key={m} value={m}>{m} minutes</option>)}
             </select>
           </label>
@@ -114,13 +114,13 @@ function QuestionCard({ index, q, resume, aiEnabled }: { index: number; q: Inter
   }
 
   return (
-    <details className="group rounded-xl border border-line bg-white p-4">
+    <details className="group rounded-2xl border border-hairline bg-white p-4">
       <summary className="flex cursor-pointer list-none items-start gap-3">
-        <span className="mt-0.5 text-sm font-semibold text-brand">{index}.</span>
+        <span className="mt-0.5 text-sm font-semibold text-grey-500">{index}.</span>
         <span className="flex-1">
           <span className="block font-medium text-ink">{q.question}</span>
           <span className="mt-1 flex flex-wrap gap-1">
-            <Badge tone="brand">{KIND_LABEL[q.kind]}</Badge>
+            <Badge tone="info">{KIND_LABEL[q.kind]}</Badge>
             <span className="text-xs text-muted">Based on: {q.basedOn}</span>
           </span>
         </span>
@@ -133,7 +133,7 @@ function QuestionCard({ index, q, resume, aiEnabled }: { index: number; q: Inter
         </Button>
         {error && <Notice tone="bad">{error}</Notice>}
         {feedback && (
-          <div className="space-y-2 rounded-lg bg-canvas p-3 text-sm">
+          <div className="space-y-2 rounded-xl bg-grey-50 p-3 text-sm">
             <div className="flex flex-wrap gap-2">
               {Object.entries(feedback.scores).map(([k, v]) => (
                 <Badge key={k} tone={v >= 4 ? "ok" : v >= 3 ? "warn" : "bad"}>{k}: {v}/5</Badge>

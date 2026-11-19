@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Button, Field, TextArea } from "@/components/ui";
+import { Badge, Button, Field, TextArea, selectClass } from "@/components/ui";
 import { isYearOnly } from "@/lib/resume/dates";
 import { newCertification, newEducation, newExperience, newProject } from "@/lib/resume/factory";
 import { composeContribution, hasMetric, quantifyPrompts, type Contribution } from "@/lib/resume/impact";
@@ -31,9 +31,9 @@ function touched<T extends { confirmed: boolean; source: Confirmable["source"] }
 export function SourceBadges({ item }: { item: { source: Confirmable["source"]; confidence?: Confirmable["confidence"]; confirmed: boolean } }) {
   return (
     <span className="flex flex-wrap items-center gap-1">
-      {item.source === "uploaded" && <Badge tone="brand">From your upload</Badge>}
-      {item.source === "edited" && <Badge tone="brand">Edited by you</Badge>}
-      {item.source === "ai" && <Badge tone="brand">AI-drafted from your words</Badge>}
+      {item.source === "uploaded" && <Badge tone="info">From your upload</Badge>}
+      {item.source === "edited" && <Badge tone="info">Edited by you</Badge>}
+      {item.source === "ai" && <Badge tone="info">AI-drafted from your words</Badge>}
       {item.source !== "typed" && item.confidence === "low" && <Badge tone="warn">Low confidence: please check</Badge>}
       {item.confirmed ? <Badge tone="ok">Confirmed</Badge> : <Badge tone="warn">Needs your confirmation</Badge>}
     </span>
@@ -50,7 +50,7 @@ export function ConfirmBox({
   label?: string;
 }) {
   return (
-    <label className={`mt-3 flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${checked ? "bg-ok-soft text-ok" : "bg-canvas text-ink"}`}>
+    <label className={`mt-3 flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-sm ${checked ? "bg-ok-soft text-ok" : "bg-grey-50 text-ink"}`}>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       {label}
     </label>
@@ -130,7 +130,7 @@ function EntryShell({
   children: React.ReactNode;
 }) {
   return (
-    <div id={`entry-${item.id}`} className="rounded-xl border border-line bg-white p-4">
+    <div id={`entry-${item.id}`} className="rounded-2xl border border-hairline bg-white p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h4 className="font-medium text-ink">{title}</h4>
         <div className="flex items-center gap-2">
@@ -213,9 +213,9 @@ export function ExperienceEditor({
             <Field label="Location (optional)" value={e.location} onChange={(ev) => update(e.id, { location: ev.target.value })} />
             {kinds.length > 1 && (
               <label className="block">
-                <span className="mb-1 block text-sm font-medium text-ink">Type</span>
+                <span className="mb-1.5 block text-[13px] font-medium text-grey-700">Type</span>
                 <select
-                  className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm"
+                  className={selectClass}
                   value={e.kind}
                   onChange={(ev) => update(e.id, { kind: ev.target.value as ExperienceKind })}
                 >
@@ -388,11 +388,11 @@ export function SkillsEditor({ resume, onChange }: EditorProps) {
       {resume.skills.length > 0 && (
         <ul className="flex flex-wrap gap-2" aria-label="Your skills">
           {resume.skills.map((s) => (
-            <li key={s} className="flex items-center gap-1 rounded-full border border-line bg-white py-1 pl-3 pr-1 text-sm">
+            <li key={s} className="flex min-h-11 items-center gap-1 rounded-full border border-hairline bg-white py-1 pl-3.5 pr-1.5 text-sm">
               {s}
               <button
                 type="button"
-                className="grid h-5 w-5 place-items-center rounded-full text-muted hover:bg-black/5 hover:text-ink"
+                className="grid h-8 w-8 place-items-center rounded-full text-grey-500 hover:bg-grey-100 hover:text-ink"
                 aria-label={`Remove ${s}`}
                 onClick={() => onChange({ ...resume, skills: resume.skills.filter((x) => x !== s), skillsConfirmed: false })}
               >
@@ -449,7 +449,7 @@ export function ContributionBuilder({ onAdd }: { onAdd: (bullet: string) => void
     );
   }
   return (
-    <div className="rounded-lg border border-brand/30 bg-brand-soft/30 p-3">
+    <div className="rounded-2xl border border-hairline bg-grey-50 p-4">
       <p className="text-sm font-medium text-ink">Build an achievement bullet</p>
       <p className="mb-3 text-xs text-muted">Recruiters look for: what you did, for whom, how, and the result. Use only numbers you can explain.</p>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -484,7 +484,7 @@ export function QuantifyHints({ bullets }: { bullets: string[] }) {
   if (!first) return null;
   const count = bullets.filter((b) => b.trim() && !hasMetric(b)).length;
   return (
-    <details className="rounded-lg bg-canvas px-3 py-2 text-sm">
+    <details className="rounded-xl bg-grey-50 px-3 py-2 text-sm">
       <summary className="cursor-pointer text-muted">
         {count} bullet{count > 1 ? "s have" : " has"} no measurable result. Questions to help you add one
       </summary>

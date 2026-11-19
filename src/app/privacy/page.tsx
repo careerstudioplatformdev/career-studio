@@ -2,9 +2,9 @@ export const metadata = { title: "Privacy · Career Studio" };
 
 export default function Privacy() {
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 text-ink [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:mt-2 [&_p]:text-muted [&_li]:text-muted">
-      <h1 className="text-2xl font-bold">Privacy notice</h1>
-      <p className="mt-2 rounded-lg bg-warn-soft px-4 py-2 text-sm !text-warn">
+    <article className="mx-auto max-w-3xl px-6 py-12 text-ink [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:mt-2 [&_p]:text-muted [&_li]:text-muted">
+      <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">Privacy notice</h1>
+      <p className="mt-2 rounded-xl bg-warn-soft px-4 py-2 text-sm !text-warn">
         Draft for the pilot. This notice will be reviewed by counsel before public launch.
       </p>
       <h2>What we store</h2>

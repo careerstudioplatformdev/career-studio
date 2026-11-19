@@ -1,20 +1,37 @@
 @import "tailwindcss";
 
+/* Career Studio UI/UX Style Guide v1.0 (docs/STYLE_GUIDE.md):
+   white first, grey for structure, ink for text and primary actions,
+   Signal Orange as a rare signal (logo mark, progress, small tags). */
 @theme {
-  --color-ink: #1c2430;
-  --color-muted: #5b6676;
-  --color-line: #e3e7ee;
-  --color-canvas: #f6f7fb;
-  --color-brand: #2f5bd3;
-  --color-brand-dark: #2447a8;
-  --color-brand-soft: #e8eefc;
-  --color-ok: #1f8a5b;
-  --color-ok-soft: #e4f5ec;
-  --color-warn: #a86400;
-  --color-warn-soft: #fdf1dc;
-  --color-bad: #b42318;
-  --color-bad-soft: #fde8e6;
+  --color-canvas: #ffffff;
+  --color-grey-50: #fafafa;
+  --color-grey-100: #f4f4f5;
+  --color-grey-200: #e7e7ea;
+  --color-grey-300: #d4d4d8;
+  --color-grey-400: #a1a1aa;
+  --color-grey-500: #71717a;
+  --color-grey-600: #52525b;
+  --color-grey-700: #3f3f46;
+  --color-ink: #18181b;
+  --color-hairline: #ededf0;
+  --color-line: #e7e7ea;
+  --color-muted: #71717a;
+
+  --color-orange: #ff6b2c;
+  --color-orange-ink: #c2410c;
+  --color-orange-wash: #fff4ed;
+
+  /* Status colors stay separate from orange (errors are never orange). */
+  --color-ok: #15803d;
+  --color-ok-soft: #ecfdf3;
+  --color-warn: #a16207;
+  --color-warn-soft: #fef9e7;
+  --color-bad: #b91c1c;
+  --color-bad-soft: #fef2f2;
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -25,9 +42,24 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  line-height: 1.55;
 }
 
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+/* Focus is always ink, never orange: 2px ring, 2px offset. */
 :focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }

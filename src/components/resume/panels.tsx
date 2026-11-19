@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { Badge, Button, Card, Notice } from "@/components/ui";
+import { Badge, Button, Card, CheckIcon, Meter, Notice } from "@/components/ui";
 import { downloadBlob } from "@/lib/download";
 import { hasMinimumContent, isExportReady, pendingConfirmations } from "@/lib/resume/facts";
 import { clampPages } from "@/lib/resume/factory";
@@ -20,14 +20,30 @@ export function ResumePreview({ resume, fscan = false }: { resume: ResumeContent
   const empty = !layout.name && layout.sections.length === 0;
   const mark = (on: boolean) => (fscan && on ? "rounded-sm bg-amber-200/70" : "");
   return (
-    <div>
+    <div className="rounded-[28px] border border-hairline bg-grey-50 p-4 sm:p-5">
+      <p className="mb-3 flex items-center gap-2 text-[13px] text-grey-600">
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-ok" />
+        Live preview
+      </p>
       <div
-        className={`relative aspect-[8.5/11] w-full overflow-auto rounded-lg border border-line bg-white p-[6%] text-[11px] leading-snug text-ink shadow-sm ${fscan ? "ring-2 ring-amber-300" : ""}`}
+        className={`relative aspect-[8.5/11] w-full overflow-auto rounded-xl border border-hairline bg-white p-[6%] text-[11px] leading-snug text-ink shadow-[0_8px_30px_rgba(24,24,27,0.06)] ${fscan ? "ring-2 ring-amber-300" : ""}`}
         aria-label="Resume preview"
       >
         {fscan && <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[22%] bg-amber-100/50" />}
         {empty ? (
-          <p className="pt-20 text-center text-sm text-muted">Your resume preview appears here as you answer.</p>
+          <div className="flex h-full flex-col gap-3">
+            <span className="sr-only">Your resume preview appears here as you answer.</span>
+            <div aria-hidden="true" className="mx-auto mt-2 h-3 w-1/2 rounded-full bg-grey-100" />
+            <div aria-hidden="true" className="mx-auto h-2 w-2/3 rounded-full bg-grey-100" />
+            {[0, 1, 2].map((i) => (
+              <div key={i} aria-hidden="true" className="mt-4 flex flex-col gap-2">
+                <div className="h-2 w-1/4 rounded-full bg-grey-100" />
+                <div className="h-2 w-full rounded-full bg-grey-100" />
+                <div className="h-2 w-5/6 rounded-full bg-grey-100" />
+              </div>
+            ))}
+            <p className="mt-auto text-center text-xs text-muted">Your resume appears here as you answer.</p>
+          </div>
         ) : (
           <div className="relative">
             <div className="text-center">
@@ -36,7 +52,7 @@ export function ResumePreview({ resume, fscan = false }: { resume: ResumeContent
             </div>
             {layout.sections.map((s) => (
               <section key={s.title} className="mt-3">
-                <h3 className={`border-b border-gray-300 pb-0.5 text-[11px] font-bold uppercase tracking-wide ${mark(true)}`}>{s.title}</h3>
+                <h3 className={`border-b border-gray-300 pb-0.5 font-sans text-[11px] font-bold uppercase tracking-wide ${mark(true)}`} style={{ letterSpacing: "0.04em" }}>{s.title}</h3>
                 {s.text && <p className="mt-1">{s.text}</p>}
                 {s.entries?.map((e, i) => (
                   <div key={i} className="mt-1.5">
@@ -65,7 +81,7 @@ export function ResumePreview({ resume, fscan = false }: { resume: ResumeContent
         )}
       </div>
       {!empty && (
-        <p className="mt-1 text-xs text-muted">
+        <p className="mt-3 text-xs text-grey-600">
           About {fit.estimatedPages} page{fit.estimatedPages === 1 ? "" : "s"} · target {resume.pageTarget}
           {fit.trimmed.length > 0 && " · shortened to fit"}
           {fscan && " · highlighted: where recruiters' eyes land"}
@@ -95,8 +111,9 @@ export function PageTargetPicker({ value, onChange, compact = false }: { value: 
             role="radio"
             aria-checked={value === n}
             onClick={() => onChange(n)}
-            className={`rounded-lg border-2 px-3 py-1.5 text-sm font-medium ${value === n ? "border-brand bg-brand-soft text-brand" : "border-line bg-white text-ink hover:border-brand"}`}
+            className={`inline-flex min-h-11 items-center gap-1.5 rounded-[10px] px-4 text-sm font-medium ${value === n ? "border-[1.5px] border-ink bg-grey-50 text-ink" : "border border-grey-200 bg-white text-grey-700 hover:border-grey-400"}`}
           >
+            {value === n && <CheckIcon className="h-3.5 w-3.5" />}
             {n} page{n > 1 ? "s" : ""}
           </button>
         ))}
@@ -119,7 +136,7 @@ export function QualityPanel({ resume }: { resume: ResumeContent }) {
             <h3 className="font-semibold text-ink">Resume quality</h3>
             <p className="text-sm text-muted">A transparent checklist. It measures structure and clarity, not your worth as a candidate.</p>
           </div>
-          <div className={`text-3xl font-bold ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : "text-bad"}`}>
+          <div className={`font-[family-name:var(--font-display)] text-4xl font-semibold tracking-[-0.03em] ${tone === "ok" ? "text-ok" : tone === "warn" ? "text-warn" : "text-bad"}`}>
             {report.score}<span className="text-base font-medium text-muted">/100</span>
           </div>
         </div>
@@ -130,8 +147,8 @@ export function QualityPanel({ resume }: { resume: ResumeContent }) {
                 <span>{c.name}</span>
                 <span className="text-muted">{c.points}/{c.max}</span>
               </div>
-              <div className="mt-1 h-1.5 rounded-full bg-canvas">
-                <div className="h-1.5 rounded-full bg-brand" style={{ width: `${(c.points / c.max) * 100}%` }} />
+              <div className="mt-1.5">
+                <Meter value={c.points} max={c.max} label={`${c.name} score`} />
               </div>
               <ul className="mt-2 space-y-1">
                 {c.checks.map((ch) => (
@@ -264,7 +281,7 @@ export function ExportPanel({
       <h3 className="font-semibold text-ink">Approve and download</h3>
       <p className="text-sm text-muted">Clean single-column Word and PDF files that applicant tracking systems can read.</p>
 
-      <div className="mt-4 rounded-lg bg-canvas p-3">
+      <div className="mt-4 rounded-xl bg-grey-50 p-3">
         <PageTargetPicker value={resume.pageTarget} onChange={(n) => onChange({ ...resume, pageTarget: clampPages(n) })} />
         <LengthReport resume={resume} />
       </div>
@@ -278,7 +295,7 @@ export function ExportPanel({
             {pending.map((p) => (
               <li key={p.id} className="text-sm">
                 {onJump ? (
-                  <button type="button" className="text-brand underline" onClick={() => onJump(p.section, p.id)}>{p.label}</button>
+                  <button type="button" className="font-medium text-orange-ink underline underline-offset-2" onClick={() => onJump(p.section, p.id)}>{p.label}</button>
                 ) : (
                   p.label
                 )}

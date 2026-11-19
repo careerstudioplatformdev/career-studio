@@ -3,7 +3,7 @@ import { MODULES, PLATFORM, STATUS_TEXT, type FeatureStatus, type RoadmapFeature
 
 export const metadata = { title: "Roadmap · Career Studio" };
 
-const TONE: Record<FeatureStatus, "ok" | "brand" | "warn" | "neutral"> = { live: "ok", partial: "brand", next: "warn", later: "neutral" };
+const TONE: Record<FeatureStatus, "ok" | "info" | "warn" | "neutral"> = { live: "ok", partial: "info", next: "warn", later: "neutral" };
 
 function FeatureList({ features }: { features: RoadmapFeature[] }) {
   return (
@@ -23,8 +23,8 @@ function FeatureList({ features }: { features: RoadmapFeature[] }) {
 
 export default function Roadmap() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-ink">Roadmap</h1>
+    <div className="mx-auto max-w-4xl px-6 py-10">
+      <h1 className="text-[30px] font-semibold text-ink sm:text-[36px]">Roadmap</h1>
       <p className="mt-1 max-w-2xl text-muted">
         Career Studio helps you build a career, not just a resume: Build → Optimize → Find jobs → Apply → Network → Prepare →
         Connect → Get hired. Eight connected modules, built one stage at a time.
@@ -32,7 +32,7 @@ export default function Roadmap() {
       <div className="mt-8 space-y-4">
         {MODULES.map((m) => (
           <Card key={m.number}>
-            <div className="text-sm font-semibold text-brand">Module {m.number}</div>
+            <div className="text-[13px] font-medium tabular-nums text-grey-500">Module {String(m.number).padStart(2, "0")}</div>
             <h2 className="text-lg font-semibold text-ink">{m.name}</h2>
             <p className="text-sm text-muted">{m.goal}</p>
             <FeatureList features={m.features} />

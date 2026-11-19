@@ -90,9 +90,9 @@ export function ImprovePanel({
           one. You compare, choose, and confirm every line.
         </p>
         <ol className="mt-3 grid gap-2 text-xs text-muted sm:grid-cols-3">
-          <li className="rounded-lg bg-canvas p-2"><strong className="text-ink">3 builders</strong><br />Recruiter · ATS · Achievement</li>
-          <li className="rounded-lg bg-canvas p-2"><strong className="text-ink">3 reviewers</strong><br />ATS & keywords · Readability · Accuracy</li>
-          <li className="rounded-lg bg-canvas p-2"><strong className="text-ink">1 final approver</strong><br />Resolves issues, recommends</li>
+          <li className="rounded-xl bg-grey-50 p-2"><strong className="text-ink">3 builders</strong><br />Recruiter · ATS · Achievement</li>
+          <li className="rounded-xl bg-grey-50 p-2"><strong className="text-ink">3 reviewers</strong><br />ATS & keywords · Readability · Accuracy</li>
+          <li className="rounded-xl bg-grey-50 p-2"><strong className="text-ink">1 final approver</strong><br />Resolves issues, recommends</li>
         </ol>
         {jobDescription.trim() && (
           <label className="mt-3 flex items-center gap-2 text-sm">
@@ -106,7 +106,7 @@ export function ImprovePanel({
           {busy ? "Agents at work…" : run ? "Run again" : "Run the 7-agent review"}
         </Button>
         {busy && (
-          <p className="mt-3 text-sm text-brand" role="status">
+          <p className="mt-3 text-sm font-medium text-ink" role="status">
             {STAGES[stage]} <span className="text-muted">(usually 1–3 minutes)</span>
           </p>
         )}
@@ -137,7 +137,7 @@ export function ImprovePanel({
                 role="tab"
                 aria-selected={selected === v.key}
                 onClick={() => setSelected(v.key)}
-                className={`rounded-full px-3 py-1 text-sm ${selected === v.key ? "bg-brand text-white" : "border border-line bg-white text-ink"}`}
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-3.5 text-sm ${selected === v.key ? "border-[1.5px] border-ink bg-grey-50 font-semibold text-ink" : "border border-hairline bg-white text-grey-700 hover:border-grey-400"}`}
               >
                 {v.label}
                 {v.key === run.recommended && " ★"}
@@ -178,7 +178,7 @@ export function ImprovePanel({
               </div>
               {current.key !== "final" && (
                 <details className="text-sm">
-                  <summary className="cursor-pointer text-brand">What the reviewers said</summary>
+                  <summary className="cursor-pointer font-medium text-ink underline underline-offset-2">What the reviewers said</summary>
                   {run.reviews.map((rv) => {
                     const item = rv.output.reviews.find((x) => x.variant === current.key);
                     if (!item) return null;
